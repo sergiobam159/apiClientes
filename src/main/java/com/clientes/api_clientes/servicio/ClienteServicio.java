@@ -9,10 +9,10 @@ import com.clientes.api_clientes.repositorio.ClienteRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Service
 public class ClienteServicio {
@@ -24,9 +24,8 @@ public class ClienteServicio {
     public ClienteResponseDTO crearCliente (ClienteRequestDTO clienteRequestDTO){
 
         Cliente cliente = ClienteMapper.toCliente(clienteRequestDTO);
+        Cliente clienteGuardado = clienteRepositorio.save(cliente);
 
-        // cliente.setId(UUID.randomUUID().toString());
-        Cliente clienteGuardado = clienteRepositorio.save(ClienteMapper.toCliente(clienteRequestDTO));
     return ClienteMapper.toRespuestaDTO(clienteGuardado);
     }
 
