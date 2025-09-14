@@ -28,7 +28,7 @@ public class ClienteControlador {
             @NotBlank(message = "consumerId es obligatorio")
             String consumerId,
             @RequestHeader("traceparent")
-            @Pattern(
+            @Pattern( //formato de traceparen ehemplo 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
                     regexp = "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$",
                     flags = Pattern.Flag.CASE_INSENSITIVE,
                     message = "error en el formato del traceparent, debe seguir el formato de W3C"
