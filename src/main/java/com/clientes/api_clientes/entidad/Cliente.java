@@ -1,11 +1,10 @@
-package com.clientes.entidad;
+package com.clientes.api_clientes.entidad;
 
-import com.azure.spring.data.cosmos.core.mapping.Container;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -14,11 +13,10 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 @Builder
-@Container(containerName = "clientes")
+@Document(collection = "clientes")
 public class Cliente {
 
     @Id
-    @GeneratedValue
     private String id;
 
     @NotNull

@@ -1,11 +1,9 @@
-package com.clientes.dto.mapper;
+package com.clientes.api_clientes.dto.mapper;
 
-import com.clientes.dto.ClienteListadoDTO;
-import com.clientes.dto.ClienteRequestDTO;
-import com.clientes.dto.ClienteResponseDTO;
-import com.clientes.entidad.Cliente;
-
-import java.util.Optional;
+import com.clientes.api_clientes.dto.ClienteListadoDTO;
+import com.clientes.api_clientes.dto.ClienteRequestDTO;
+import com.clientes.api_clientes.dto.ClienteResponseDTO;
+import com.clientes.api_clientes.entidad.Cliente;
 
 //para no tener en la capa servicio transformadores para los dto
 public class ClienteMapper {
