@@ -3,7 +3,7 @@ package com.clientes.dto;
 import lombok.Data;
 
 @Data
-public class ClienteListaDTO
+public class ClienteListadoDTO
 {
 
 private String id;

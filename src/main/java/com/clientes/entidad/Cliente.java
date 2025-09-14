@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -14,8 +15,6 @@ import java.util.Date;
 @Data
 @Builder
 @Container(containerName = "clientes")
-@Getter
-@Setter
 public class Cliente {
 
     @Id
@@ -34,10 +33,10 @@ public class Cliente {
     private String apellidoMaterno;
 
 
-    private Date fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
 
-    private Boolean estado;
+    private boolean activo;
 
 
 }
