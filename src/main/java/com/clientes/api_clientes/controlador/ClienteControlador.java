@@ -7,13 +7,16 @@ import com.clientes.api_clientes.dto.ClienteResponseDTO;
 import com.clientes.api_clientes.servicio.ClienteServicio;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/clientes")
 public class ClienteControlador {
     @Autowired
@@ -31,7 +34,7 @@ public class ClienteControlador {
                     message = "error en el formato del traceparent, debe seguir el formato de W3C"
             )String traceparent,
             @RequestHeader("deviceType")
-            @NotBlank(message = "tipoDispositivo es obligatorio")
+            @NotNull(message = "tipoDispositivo es obligatorio")
             TipoDispositivo tipoDispositivo,
             @RequestHeader("deviceId")
             @NotBlank(message = "deviceId es obligatorio")
