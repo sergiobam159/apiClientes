@@ -25,10 +25,7 @@ public class ClienteServicio {
 
         Cliente cliente = ClienteMapper.toCliente(clienteRequestDTO);
 
-        cliente.setId(UUID.randomUUID().toString());
-        cliente.setFechaCreacion(LocalDateTime.now());
-        cliente.setActivo(true);
-
+        // cliente.setId(UUID.randomUUID().toString());
         Cliente clienteGuardado = clienteRepositorio.save(ClienteMapper.toCliente(clienteRequestDTO));
     return ClienteMapper.toRespuestaDTO(clienteGuardado);
     }

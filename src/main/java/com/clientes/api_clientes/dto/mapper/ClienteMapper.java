@@ -15,7 +15,8 @@ public class ClienteMapper {
         cliente.setApellidoPaterno(dto.getApellidoPaterno());
         cliente.setApellidoMaterno(dto.getApellidoMaterno());
         cliente.setActivo(true); //seteo true por defecto
-        cliente.setFechaCreacion(java.time.LocalDateTime.now()); //seteo la fecha de creacion enel momento en el que recibo el post cliente
+        cliente.setFechaCreacion(java.time.LocalDateTime.now());
+        //seteo la fecha de creacion enel momento en el que recibo el post cliente
         return cliente;
     }
 
