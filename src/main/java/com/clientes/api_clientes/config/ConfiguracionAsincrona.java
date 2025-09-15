@@ -14,7 +14,7 @@ public class ConfiguracionAsincrona {
 
     @Bean(name = "analyticsExecutor")
     public Executor analyticsExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(100);
