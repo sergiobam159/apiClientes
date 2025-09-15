@@ -12,13 +12,13 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class ConfiguracionAsincrona {
 
-    @Bean(name = "analyticsExecutor")
-    public Executor analyticsExecutor() {
+    @Bean(name = "eventHubExecutor")
+    public Executor eventHubExecutor() {
          ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("analytics-");
+        executor.setThreadNamePrefix("eventHub-");
         executor.initialize();
         return executor;
     }

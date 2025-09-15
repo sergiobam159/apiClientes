@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @Validated
 @RequestMapping("/clientes")
+@Slf4j
 public class ClienteControlador {
     @Autowired
     private ClienteServicio clienteServicio;
@@ -28,28 +30,29 @@ public class ClienteControlador {
 
     @PostMapping
     public ClienteResponseDTO crearCliente (
-            @RequestHeader("consumerId")
+            @RequestHeader("consumerId") //OK
             @NotBlank(message = "consumerId es obligatorio")
             String consumerId,
             @RequestHeader("traceparent")
-            @Pattern( //formato de traceparen ehemplo 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+            @Pattern( //formato de traceparen ejemplo 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
                     regexp = "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$",
                     flags = Pattern.Flag.CASE_INSENSITIVE,
                     message = "error en el formato del traceparent, debe seguir el formato de W3C"
-            )String traceparent,
+            )String traceparent, //OK
             @RequestHeader("deviceType")
             @NotNull(message = "tipoDispositivo es obligatorio")
-            TipoDispositivo tipoDispositivo,
+            TipoDispositivo tipoDispositivo, //OK
             @RequestHeader("deviceId")
             @NotBlank(message = "deviceId es obligatorio")
-            String deviceId,
-            @RequestHeader(value = "channelOperationNumber", required = false) // no se ah pero bueno, no entiendo bien la docu
+            String deviceId, //OK
+            @RequestHeader(value = "channelOperationNumber", required = false) // no sé ah, pero bueno, no entiendo bien esto la docu
             String channelOperationNumber,
             @Valid
             @RequestBody ClienteRequestDTO clienteRequest){
 
+       log.info("Recibida solicitud para crear cliente");
         ClienteResponseDTO clienteRespuesta = clienteServicio.crearCliente(clienteRequest);
-
+        log.info("Cliente creado correctamente ");
 
         analiticaServicio.logCreacionClienteAsync(
                 consumerId, traceparent, tipoDispositivo, deviceId, channelOperationNumber, clienteRequest, clienteRespuesta
@@ -59,7 +62,7 @@ public class ClienteControlador {
     }
 
     @GetMapping
-    public List<ClienteListadoDTO> listarclientes(
+    public List<ClienteListadoDTO> listarClientes(
             @RequestHeader("consumerId") @NotBlank String consumerId,
             @RequestHeader("traceparent")
             @NotBlank

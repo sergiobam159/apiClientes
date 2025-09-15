@@ -7,11 +7,16 @@ import com.clientes.api_clientes.dto.ClienteResponseDTO;
 import com.clientes.api_clientes.integracion.TramaEventHub;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import java.time.Duration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 @Slf4j
@@ -20,16 +25,15 @@ public class AnaliticaServicio {
 
     private final ObjectMapper objectMapper;
 
-    @Value("${app.analytics.region}")
+    @Value("${app.eventHub.region}")
     private String region;
-   // @Value("${app.analytics.application-prefijo:application-}")
-    //private String applicationPrefijo;
+
     // Código de transacción para "registro de cliente"
-    @Value("${app.analytics.transaction.create}")
+    @Value("${app.eventHub.transaction.crearCliente}")
     private String transactionCodeCreate;
 
 
-    @Async("analyticsExecutor")
+    @Async("eventHubExecutor")
     public void logCreacionClienteAsync(
             String consumerId,
             String traceparent,
@@ -39,55 +43,56 @@ public class AnaliticaServicio {
             ClienteRequestDTO request,
             ClienteResponseDTO response
     ){
+        try {
              long timestamp = System.currentTimeMillis();
                 String applicationId = consumerId; // asumiendo que son iguales
-                String analyticsTraceSource = "application-" + consumerId;
-
+                String eventHubTraceSource = "application-" + applicationId;
                 String currentDate = java.time.OffsetDateTime.now().toString();
-
                 String customerId = response.getId();
+                String statusCode = "0000"; // éxito, es otro codigo para el list, podria ponerlo en el properties
+                String  traceId = extraer(traceparent, 1);
 
-                String statusCode = "0000"; // éxito
+                //NO SE DEFINE SI VIENE O NO, PERO EN EL EJEMPLO ES UN TIMESTAMP DE LA FECHA
+            String chaOpeNumbString = (channelOperationNumber == null || channelOperationNumber.isBlank())
+                    ? String.valueOf(timestamp)
+                    : channelOperationNumber;
 
-        String traceId = extraer(traceparent, 1);
-
-        String inboundString = toJson(request);
-
-        //PONERLE OPTIONAL?
-        if (tipoDispositivo != null || deviceId != null) {
+            String outboundString = toJson(response);
+            String inboundString = toJson(request);
             inboundString = wrapWithDeviceInfo(inboundString, tipoDispositivo, deviceId);
+
+
+
+            TramaEventHub trama = TramaEventHub.builder()
+                    .analyticsTraceSource(eventHubTraceSource)
+                    .applicationId(applicationId)
+                    .channelOperationNumber(chaOpeNumbString)
+                    .consumerId(consumerId)
+                    .currentDate(currentDate)
+                    .customerId(customerId)
+                    .region(region)
+                    .statusCode(statusCode)
+                    .timestamp(timestamp)
+                    .traceId(traceId)
+                    .inbound(inboundString)
+                    .outbound(outboundString)
+                    .transactionCode(transactionCodeCreate)
+                    .build();
+
+            String jsonTrama = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(trama);
+
+            log.info("ANALYTICS createClient {}", jsonTrama);
+
+        } catch (Exception e) {
+            log.error("ANALYTICS error al construir/loguear la trama", e);
         }
-
-        String outboundString = toJson(response);
-
-        //OPTIONAL?
-        String chaOpeNumbString = (channelOperationNumber == null || channelOperationNumber.isBlank())
-                ? String.valueOf(timestamp)
-                : channelOperationNumber;
-
-
-        TramaEventHub trama = TramaEventHub.builder()
-                .analyticsTraceSource(analyticsTraceSource)
-                .applicationId(applicationId)
-                .channelOperationNumber(chaOpeNumbString)
-                .consumerId(consumerId)
-                .currentDate(currentDate)
-                .customerId(response != null ? response.getId() : null)
-                .region(region)
-                .statusCode("0000")
-                .timestamp(timestamp)
-                .traceId(traceId)
-                .inbound(inboundString)
-                .outbound(outboundString)
-                .transactionCode(transactionCodeCreate)
-                .build();
-
     }
 
-    private String extraer(String traceparent, int index) {
+
+    private String extraer(String traceparent, int indice) {
         try {
             String[] parts = traceparent.split("-");
-                return parts[index];
+                return parts[indice];
         } catch (Exception ignored) {}
         return null;
     }
@@ -97,11 +102,11 @@ public class AnaliticaServicio {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            return "\"<no-serializable>\"";
+            return "error a convertir a json: " + e.getMessage();
         }
     }
 
-    //ESTO QUE HACE?
+    //ESTO QUE HACE? REVISAR A DETALLE
     private String wrapWithDeviceInfo(String requestJson, TipoDispositivo tipoDispositivo, String deviceId) {
         // Inserta deviceType y deviceId como un objeto "inbound" similar al del ejemplo
         String type = tipoDispositivo != null ? tipoDispositivo.name() : null;
@@ -110,5 +115,7 @@ public class AnaliticaServicio {
         return String.format("{\"deviceId\":\"%s\",\"deviceType\":\"%s\",\"document\":%s}",
                 id, type, requestJson);
     }
+
+
 
 }
