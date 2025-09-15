@@ -4,6 +4,7 @@ import com.clientes.api_clientes.constantes.TipoDispositivo;
 import com.clientes.api_clientes.dto.ClienteListadoDTO;
 import com.clientes.api_clientes.dto.ClienteRequestDTO;
 import com.clientes.api_clientes.dto.ClienteResponseDTO;
+import com.clientes.api_clientes.servicio.AnaliticaServicio;
 import com.clientes.api_clientes.servicio.ClienteServicio;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +23,9 @@ public class ClienteControlador {
     @Autowired
     private ClienteServicio clienteServicio;
 
+    @Autowired
+    private AnaliticaServicio analiticaServicio;
+
     @PostMapping
     public ClienteResponseDTO crearCliente (
             @RequestHeader("consumerId")
@@ -39,10 +43,19 @@ public class ClienteControlador {
             @RequestHeader("deviceId")
             @NotBlank(message = "deviceId es obligatorio")
             String deviceId,
+            @RequestHeader(value = "channelOperationNumber", required = false) // no se ah pero bueno, no entiendo bien la docu
+            String channelOperationNumber,
             @Valid
-            @RequestBody ClienteRequestDTO cliente){
+            @RequestBody ClienteRequestDTO clienteRequest){
 
-            return  clienteServicio.crearCliente(cliente);
+        ClienteResponseDTO clienteRespuesta = clienteServicio.crearCliente(clienteRequest);
+
+
+        analiticaServicio.logCreacionClienteAsync(
+                consumerId, traceparent, tipoDispositivo, deviceId, channelOperationNumber, clienteRequest, clienteRespuesta
+        );
+
+        return clienteRespuesta;
     }
 
     @GetMapping
