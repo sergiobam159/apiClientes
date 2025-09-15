@@ -24,6 +24,7 @@ import java.time.Instant;
 public class AnaliticaServicio {
 
     private final ObjectMapper objectMapper;
+    private final EventHubServicio eventHubSender;
 
     @Value("${app.eventHub.region}")
     private String region;
@@ -82,6 +83,9 @@ public class AnaliticaServicio {
             String jsonTrama = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(trama);
 
             log.info("ANALYTICS createClient {}", jsonTrama);
+            // Envío a Event Hubs (compacto) usando traceId como partitionKey
+            String jsonTramaCompact = objectMapper.writeValueAsString(trama);
+            eventHubSender.enviarJson(jsonTramaCompact, traceId);
 
         } catch (Exception e) {
             log.error("ANALYTICS error al construir/loguear la trama", e);
