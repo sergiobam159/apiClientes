@@ -26,7 +26,7 @@ public class ClienteServicio {
 
         Cliente cliente = ClienteMapper.toCliente(clienteRequestDTO);
         Cliente clienteGuardado = clienteRepositorio.save(cliente);
-        log.info("Cliente creado correctamente ");
+        log.info("Cliente creado correctamente");
     return ClienteMapper.toRespuestaDTO(clienteGuardado);
     }
 
