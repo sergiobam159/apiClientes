@@ -52,7 +52,7 @@ public class ClienteControlador {
 
        log.info("Recibida solicitud para crear cliente");
         ClienteResponseDTO clienteRespuesta = clienteServicio.crearCliente(clienteRequest);
-        log.info("Cliente creado correctamente ");
+
 
         analiticaServicio.logCreacionClienteAsync(
                 consumerId, traceparent, tipoDispositivo, deviceId, channelOperationNumber, clienteRequest, clienteRespuesta
@@ -72,11 +72,18 @@ public class ClienteControlador {
             )
             String traceparent,
             @RequestHeader("deviceType") TipoDispositivo tipoDispositivo,
-            @RequestHeader("deviceId") @NotBlank String deviceId
+            @RequestHeader("deviceId") @NotBlank String deviceId,
+            @RequestHeader(value = "channelOperationNumber", required = false) // no sé ah, pero bueno, no entiendo bien esto la docu
+            String channelOperationNumber
+
     ){
+        log.info("Recibida solicitud para listar clientes");
+        List<ClienteListadoDTO> clientesListados = clienteServicio.listarClientes();
 
-        return clienteServicio.listarClientes();
-
+        analiticaServicio.logListadoClienteAsync(
+                consumerId, traceparent, tipoDispositivo, deviceId, channelOperationNumber, clientesListados
+        );
+        return clientesListados;
     }
 
 

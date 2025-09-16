@@ -1,4 +1,4 @@
-package com.clientes.servicio;
+package com.clientes.api_clientes.servicio;
 
 import com.clientes.api_clientes.dto.ClienteListadoDTO;
 import com.clientes.api_clientes.dto.ClienteRequestDTO;
@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,14 +65,18 @@ class ClienteServicioTest {
     }
 
     @Test
-    void testListarClientesConApellidoMaterno() {
+    void testListarClientes() {
 
         Cliente c = new Cliente();
+        Cliente c2 = new Cliente();
         c.setId("1");
         c.setNombre("Ana");
         c.setApellidoPaterno("Gomez");
         c.setApellidoMaterno("Diaz");
-        List<Cliente> lista = Collections.singletonList(c);
+        c2.setId("2");
+        c2.setNombre("Pancho");
+        c2.setApellidoPaterno("Villa");
+        List<Cliente> lista = List.of(c, c2);
         when(clienteRepositorio.findAll()).thenReturn(lista);
 
 
@@ -85,25 +90,6 @@ class ClienteServicioTest {
       //  verify(clienteRepositorio, times(1)).findAll();
     }
 
-    @Test
-    void testListarClientesSinApellidoMaterno() {
-        Cliente c = new Cliente();
-        c.setId("2");
-        c.setNombre("Luis");
-        c.setApellidoPaterno("Ramirez");
-        c.setApellidoMaterno("");
-        List<Cliente> lista = Collections.singletonList(c);
-        when(clienteRepositorio.findAll()).thenReturn(lista);
 
-
-        List<ClienteListadoDTO> result = clienteServicio.listarClientes();
-
-
-        assertEquals(1, result.size());
-        ClienteListadoDTO dto = result.get(0);
-        assertEquals("2", dto.getId());
-        assertEquals("Luis Ramirez", dto.getNombreCompleto());
-        //verify(clienteRepositorio, times(1)).findAll();
-    }
 }
 

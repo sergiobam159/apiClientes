@@ -9,7 +9,7 @@ public class TramaEventHub {
 
     private String analyticsTraceSource;   // cabecera + consumerid ->  "application-SMP"
     private String applicationId;          // applicationId -> "SMP"
-    private String channelOperationNumber; // en el log pero no lo define, autogenerado?
+    private String channelOperationNumber; // en el log pero no lo define, otro header? autogenerado?
     private String consumerId;             // consumerId lo mismo que applicationId -> "SMP"
     private String currentDate;            // fecha formato 2024-10-17T11:32:22.782-05
     private String customerId;             // id del cliente

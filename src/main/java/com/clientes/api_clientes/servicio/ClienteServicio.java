@@ -6,6 +6,7 @@ import com.clientes.api_clientes.dto.ClienteResponseDTO;
 import com.clientes.api_clientes.dto.mapper.ClienteMapper;
 import com.clientes.api_clientes.entidad.Cliente;
 import com.clientes.api_clientes.repositorio.ClienteRepositorio;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 public class ClienteServicio {
 
@@ -25,7 +26,7 @@ public class ClienteServicio {
 
         Cliente cliente = ClienteMapper.toCliente(clienteRequestDTO);
         Cliente clienteGuardado = clienteRepositorio.save(cliente);
-
+        log.info("Cliente creado correctamente ");
     return ClienteMapper.toRespuestaDTO(clienteGuardado);
     }
 
