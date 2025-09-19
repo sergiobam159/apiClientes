@@ -66,8 +66,6 @@ public class AnaliticaServicio {
             String inboundString = toJson(request);
             inboundString = wrapWithDeviceInfo(inboundString, tipoDispositivo, deviceId);
 
-
-
             TramaEventHub trama = TramaEventHub.builder()
                     .analyticsTraceSource(eventHubTraceSource)
                     .applicationId(applicationId)
@@ -89,6 +87,7 @@ public class AnaliticaServicio {
             log.info("ANALYTICS crearCliente {}", jsonTrama);
             // Envío a Event Hubs (compacto) usando traceId como partitionKey
             String jsonTramaCompact = objectMapper.writeValueAsString(trama);
+
             eventHubSender.enviarJson(jsonTramaCompact, traceId);
 
         } catch (Exception e) {
@@ -112,19 +111,15 @@ public class AnaliticaServicio {
             String applicationId = consumerId; // asumiendo que son iguales
             String eventHubTraceSource = "application-" + applicationId;
             String currentDate = java.time.OffsetDateTime.now().toString();
-           // String customerId = response.getId();
             String statusCode = "0000"; // éxito
             String  traceId = extraer(traceparent, 1);
 
-            //NO SE DEFINE SI VIENE O NO, PERO EN EL EJEMPLO ES UN TIMESTAMP DE LA FECHA
+
             String chaOpeNumbString = (channelOperationNumber == null || channelOperationNumber.isBlank())
                     ? String.valueOf(timestamp)
                     : channelOperationNumber;
 
             String outboundString = toJson(response);
-            //inboundString = wrapWithDeviceInfo(inboundString, tipoDispositivo, deviceId);
-
-
 
             TramaEventHub trama = TramaEventHub.builder()
                     .analyticsTraceSource(eventHubTraceSource)
@@ -132,7 +127,6 @@ public class AnaliticaServicio {
                     .channelOperationNumber(chaOpeNumbString)
                     .consumerId(consumerId)
                     .currentDate(currentDate)
-                    //.customerId(customerId)
                     .region(region)
                     .statusCode(statusCode)
                     .timestamp(timestamp)
@@ -144,7 +138,7 @@ public class AnaliticaServicio {
             String jsonTrama = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(trama);
 
             log.info("ANALYTICS ListarCliente {}", jsonTrama);
-            // Envío a Event Hubs (compacto) usando traceId como partitionKey
+            // Envío a Event Hubs usando traceId como partitionKey
             String jsonTramaCompact = objectMapper.writeValueAsString(trama);
             eventHubSender.enviarJson(jsonTramaCompact, traceId);
 

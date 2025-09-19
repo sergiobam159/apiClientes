@@ -61,7 +61,7 @@ class ClienteServicioTest {
         assertTrue(response.isActivo());
         assertNotNull(response.getFechaCreacion());
 
-       // verify(clienteRepositorio, times(1)).save(any(Cliente.class));
+       verify(clienteRepositorio, times(1)).save(any(Cliente.class));
     }
 
     @Test
@@ -83,11 +83,11 @@ class ClienteServicioTest {
         List<ClienteListadoDTO> result = clienteServicio.listarClientes();
 
 
-        assertEquals(1, result.size());
+        assertEquals(2, result.size());
         ClienteListadoDTO dto = result.get(0);
         assertEquals("1", dto.getId());
         assertEquals("Ana Gomez Diaz" , dto.getNombreCompleto());
-      //  verify(clienteRepositorio, times(1)).findAll();
+        verify(clienteRepositorio, times(1)).findAll();
     }
 
 

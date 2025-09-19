@@ -45,14 +45,13 @@ public class ClienteControlador {
             @RequestHeader("deviceId")
             @NotBlank(message = "deviceId es obligatorio")
             String deviceId, //OK
-            @RequestHeader(value = "channelOperationNumber", required = false) // no sé ah, pero bueno, no entiendo bien esto la docu
+            @RequestHeader(value = "channelOperationNumber", required = false) // no no entiendo bien esto la docu
             String channelOperationNumber,
             @Valid
             @RequestBody ClienteRequestDTO clienteRequest){
 
        log.info("Recibida solicitud para crear cliente");
         ClienteResponseDTO clienteRespuesta = clienteServicio.crearCliente(clienteRequest);
-
 
         analiticaServicio.logCreacionClienteAsync(
                 consumerId, traceparent, tipoDispositivo, deviceId, channelOperationNumber, clienteRequest, clienteRespuesta
@@ -73,7 +72,7 @@ public class ClienteControlador {
             String traceparent,
             @RequestHeader("deviceType") TipoDispositivo tipoDispositivo,
             @RequestHeader("deviceId") @NotBlank String deviceId,
-            @RequestHeader(value = "channelOperationNumber", required = false) // no sé ah, pero bueno, no entiendo bien esto la docu
+            @RequestHeader(value = "channelOperationNumber", required = false)
             String channelOperationNumber
 
     ){
